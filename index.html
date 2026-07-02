@@ -3,85 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Tabelas de Campeonatos</title>
+    <title>Arena Tabelas - Gerador de Torneios</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2c3e50">
+    <meta name="theme-color" content="#0f172a">
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #16a085;
-            --danger: #e74c3c;
-            --bg: #f5f6fa;
-            --text: #2f3640;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary-neon: #38bdf8;
+            --gold: #f59e0b;
+            --danger: #ef4444;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             margin: 0;
             padding: 15px;
         }
 
         .container {
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
         }
 
-        h1, h2, h3 {
+        h1 {
             text-align: center;
-            color: var(--primary);
-            margin-top: 5px;
+            color: var(--primary-neon);
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
         }
 
-        h2 { font-size: 20px; }
-        h3 { font-size: 16px; color: #7f8c8d; }
+        h2 {
+            text-align: center;
+            color: var(--gold);
+            font-size: 20px;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        h3 {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
 
         .no-print {
-            background: #f8f9fa;
+            background: #111827;
             padding: 20px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            border: 1px solid #dcdde1;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-light);
+            font-size: 14px;
         }
 
         select, input, button, textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px;
+            background-color: #1f2937;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             box-sizing: border-box;
-            font-size: 16px;
+            font-size: 15px;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-neon);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
         }
 
         button {
-            background-color: var(--secondary);
-            color: white;
+            background-color: var(--primary-neon);
+            color: #0f172a;
             border: none;
             cursor: pointer;
             font-weight: bold;
-            margin-top: 10px;
+            text-transform: uppercase;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
         }
 
-        .btn-danger { background-color: var(--danger); }
-        .btn-print { background-color: var(--primary); margin-top: 20px; }
+        button:hover {
+            background-color: #7dd3fc;
+            transform: translateY(-1px);
+        }
 
-        /* Configuração estrutural para folha em pé */
+        .btn-danger {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        .btn-danger:hover {
+            background-color: var(--danger);
+            color: #fff;
+        }
+
+        .btn-print {
+            background-color: var(--gold);
+            color: #0f172a;
+            margin-top: 25px;
+            font-size: 16px;
+        }
+        .btn-print:hover { background-color: #fbbf24; }
+
+        /* Estrutura de Tabelas (Pontos Corridos) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #111827;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #1f2937;
+            color: var(--primary-neon);
+            font-weight: 600;
+        }
+
+        /* Estrutura de Chaves (Mata-Mata) */
         .multi-chaves {
             display: flex;
             flex-direction: column;
@@ -89,11 +164,11 @@
         }
 
         .bloco-chave {
-            border: 1px solid #ddd;
-            padding: 12px;
-            border-radius: 6px;
-            background: #fff;
-            page-break-inside: avoid; /* Não quebra a chave no meio da folha */
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 12px;
+            background: #111827;
+            page-break-inside: avoid;
         }
 
         .chaveamento {
@@ -112,10 +187,10 @@
         }
 
         .jogo-mata {
-            background: #f8f9fa;
-            border: 2px solid var(--primary);
-            border-radius: 6px;
-            padding: 6px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 8px;
             margin: 8px 0;
         }
 
@@ -123,7 +198,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 2px 0;
+            padding: 3px 0;
             font-size: 13px;
         }
 
@@ -131,85 +206,120 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            max-width: 110px; /* Evita que nomes gigantes quebrem o layout em pé */
+            max-width: 110px;
         }
 
         .resultado-input {
-            width: 30px;
+            width: 32px;
             text-align: center;
-            border: 1px solid #bdc3c7;
+            border: 1px solid var(--border);
             padding: 2px;
-            border-radius: 3px;
-            height: 20px;
+            border-radius: 4px;
+            height: 22px;
             font-size: 12px;
+            background: #111827;
         }
 
-        /* Forçar Impressão em formato Retrato (Em Pé) */
+        /* Regras de Impressão (Garante folha limpa em branco e preto na vertical) */
         @media print {
             @page {
                 size: portrait;
-                margin: 0.8cm;
+                margin: 0.6cm;
             }
             body { background: white; color: black; padding: 0; }
             .no-print { display: none !important; }
-            .container { box-shadow: none; padding: 0; max-width: 100%; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; border: none; background: transparent;}
+            h1 { color: black !important; text-shadow: none; }
+            h2 { color: black !important; }
+            th { background-color: #e2e8f0 !important; color: black !important; border: 1px solid #000 !important; }
+            td { border: 1px solid #000 !important; color: black !important; }
+            table { background: white !important; }
+            .bloco-chave { border: 1px solid #000 !important; background: white !important; }
             .jogo-mata { border: 2px solid #000 !important; background: white !important; }
-            .resultado-input { border: 1px solid #000 !important; background: transparent; }
-            .bloco-chave { border: 1px solid #000; }
+            .resultado-input { border: 1px solid #000 !important; background: transparent !important; color: black !important; }
+            .time-chave { color: black !important; }
+            h3 { color: #475569 !important; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 id="titulo-torneio">Gerador de Campeonatos</h1>
+    <h1 id="titulo-torneio">Arena Torneios</h1>
     
     <div class="no-print">
         <div class="form-group">
-            <label for="nome-esporte">Nome do Esporte / Competição:</label>
-            <input type="text" id="nome-esporte" placeholder="Ex: Copa Sesc de Futsal" oninput="salvarDados()">
+            <label for="nome-esporte">Nome do Torneio / Esporte:</label>
+            <input type="text" id="nome-esporte" placeholder="Ex: Copa de Futsal 2026" oninput="salvarDados()">
         </div>
 
         <div class="form-group">
-            <label for="qtd-chaves">Quantidade de Chaves na página:</label>
+            <label for="tipo-campeonato">Formato do Campeonato:</label>
+            <select id="tipo-campeonato" onchange="alternarFormatos(); salvarDados();">
+                <option value="pontos">Pontos Corridos (Tabela Geral)</option>
+                <option value="matamata">Mata-Mata (Chaveamento Eliminatório)</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="config-chaves-mata" style="display: none;">
+            <label for="qtd-chaves">Quantidade de Chaves na folha:</label>
             <select id="qtd-chaves" onchange="alternarTextareas(); salvarDados();">
-                <option value="1">1 Chaveamento</option>
-                <option value="2">2 Chaveamentos (Máximo por página)</option>
+                <option value="1">1 Chaveamento Isolado</option>
+                <option value="2">2 Chaveamentos (Chave 1 e Chave 2)</option>
             </select>
         </div>
 
         <div class="form-group" id="grupo-chave1">
-            <label id="label-chave1">Times da Chave 1 (um por linha):</label>
-            <textarea id="times-chave1" rows="5" placeholder="Time A&#10;Time B&#10;Time C&#10;Time D" oninput="salvarDados()"></textarea>
+            <label id="label-chave1">Times (um por linha):</label>
+            <textarea id="times-chave1" rows="6" placeholder="Time A&#10;Time B&#10;Time C&#10;Time D" oninput="salvarDados()"></textarea>
         </div>
 
         <div class="form-group" id="grupo-chave2" style="display: none;">
             <label>Times da Chave 2 (um por linha):</label>
-            <textarea id="times-chave2" rows="5" placeholder="Time E&#10;Time F&#10;Time G&#10;Time H" oninput="salvarDados()"></textarea>
+            <textarea id="times-chave2" rows="6" placeholder="Time E&#10;Time F&#10;Time G&#10;Time H" oninput="salvarDados()"></textarea>
         </div>
 
-        <button onclick="gerarCampeonato()">Gerar / Atualizar Chaveamentos</button>
-        <button class="btn-danger" onclick="limparComSenha()">Excluir / Limpar Tudo</button>
+        <button onclick="gerarCampeonato()">Gerar Tabela / Chaves</button>
+        <button class="btn-danger" onclick="limparComSenha()">Limpar Tudo</button>
     </div>
 
-    <!-- Area de Impressão -->
+    <!-- Espaço Renderizado para Impressão -->
     <div id="espaco-campeonato" class="multi-chaves"></div>
 
-    <button class="no-print btn-print" id="btn-imprimir" onclick="window.print()" style="display: none;">Imprimir / Salvar em PDF (Folha em Pé)</button>
+    <button class="no-print btn-print" id="btn-imprimir" onclick="window.print()" style="display: none;">Imprimir Tabela (Folha em Pé)</button>
 </div>
 
 <script>
     const SENHA_CORRETA = "26";
 
+    // Service Worker com escopo corrigido para ativação PWA
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('PWA Pronto para instalação.', reg.scope))
+            .catch(err => console.log('Erro PWA:', err));
+        });
     }
 
     window.onload = function() {
         carregarDadosSalvos();
     };
 
+    function alternarFormatos() {
+        const tipo = document.getElementById('tipo-campeonato').value;
+        if (tipo === "pontos") {
+            document.getElementById('config-chaves-mata').style.display = "none";
+            document.getElementById('grupo-chave2').style.display = "none";
+            document.getElementById('label-chave1').innerText = "Times do Campeonato (um por linha):";
+        } else {
+            document.getElementById('config-chaves-mata').style.display = "block";
+            alternarTextareas();
+        }
+    }
+
     function alternarTextareas() {
+        const tipo = document.getElementById('tipo-campeonato').value;
+        if (tipo === "pontos") return;
         const qtd = document.getElementById('qtd-chaves').value;
         document.getElementById('grupo-chave2').style.display = qtd == 2 ? "block" : "none";
         document.getElementById('label-chave1').innerText = qtd == 2 ? "Times da Chave 1 (um por linha):" : "Times do Campeonato (um por linha):";
@@ -217,6 +327,7 @@
 
     function salvarDados() {
         localStorage.setItem('nomeEsporte', document.getElementById('nome-esporte').value);
+        localStorage.setItem('tipoCamp', document.getElementById('tipo-campeonato').value);
         localStorage.setItem('qtdChaves', document.getElementById('qtd-chaves').value);
         localStorage.setItem('times1', document.getElementById('times-chave1').value);
         localStorage.setItem('times2', document.getElementById('times-chave2').value);
@@ -224,6 +335,10 @@
 
     function carregarDadosSalvos() {
         if (localStorage.getItem('nomeEsporte')) document.getElementById('nome-esporte').value = localStorage.getItem('nomeEsporte');
+        if (localStorage.getItem('tipoCamp')) {
+            document.getElementById('tipo-campeonato').value = localStorage.getItem('tipoCamp');
+            alternarFormatos();
+        }
         if (localStorage.getItem('qtdChaves')) {
             document.getElementById('qtd-chaves').value = localStorage.getItem('qtdChaves');
             alternarTextareas();
@@ -235,7 +350,7 @@
     }
 
     function limparComSenha() {
-        if (prompt("Digite a senha para confirmar a exclusão:") === SENHA_CORRETA) {
+        if (prompt("Digite a senha para limpar os dados:") === SENHA_CORRETA) {
             localStorage.clear();
             location.reload();
         } else {
@@ -243,27 +358,77 @@
         }
     }
 
-    function criarEstruturaChave(times, numeroChave) {
-        if (times.length < 2) return "";
+    function coletarLinhas(texto) {
+        return texto.split('\n').map(l => l.trim()).filter(l => l !== "");
+    }
 
+    function gerarCampeonato() {
+        const esporte = document.getElementById('nome-esporte').value || "Meu Torneio";
+        const tipo = document.getElementById('tipo-campeonato').value;
+        document.getElementById('titulo-torneio').innerText = esporte;
+
+        const espaco = document.getElementById('espaco-campeonato');
+        espaco.innerHTML = "";
+
+        let t1 = coletarLinhas(document.getElementById('times-chave1').value);
+
+        if (t1.length < 2) {
+            return;
+        }
+
+        if (tipo === "pontos") {
+            renderizarPontosCorridos(t1, espaco);
+        } else {
+            let t2 = coletarLinhas(document.getElementById('times-chave2').value);
+            let qtd = parseInt(document.getElementById('qtd-chaves').value);
+            
+            let htmlChaves = "";
+            htmlChaves += criarEstruturaMataMata(t1, qtd == 2 ? "1" : "");
+            if (qtd == 2 && t2.length >= 2) {
+                htmlChaves += criarEstruturaMataMata(t2, "2");
+            }
+            espaco.innerHTML = htmlChaves;
+        }
+
+        document.getElementById('btn-imprimir').style.display = "block";
+    }
+
+    function renderizarPontosCorridos(times, container) {
+        let html = `<div class="bloco-chave"><h2>Tabela de Classificação</h2>`;
+        html += `<table><thead><tr><th>Pos</th><th>Time</th><th>PONTOS</th><th>J</th><th>V</th><th>E</th><th>D</th></tr></thead><tbody>`;
+        times.forEach((time, idx) => {
+            html += `<tr><td>${idx + 1}º</td><td style="text-align:left; font-weight:bold;">${time}</td><td></td><td></td><td></td><td></td><td></td></tr>`;
+        });
+        html += `</tbody></table></div>`;
+
+        html += `<div class="bloco-chave" style="margin-top:20px;"><h2>Tabela de Jogos</h2>`;
+        html += `<table><thead><tr><th>Mandante</th><th>Placar</th><th>X</th><th>Placar</th><th>Visitante</th></tr></thead><tbody>`;
+        for (let i = 0; i < times.length; i++) {
+            for (let j = i + 1; j < times.length; j++) {
+                html += `<tr><td style="text-align:right; width:38%;">${times[i]}</td><td style="width:10%;"><input type="text" class="resultado-input"></td><td style="font-weight:bold; width:4%;">X</td><td style="width:10%;"><input type="text" class="resultado-input"></td><td style="text-align:left; width:38%;">${times[j]}</td></tr>`;
+            }
+        }
+        html += `</tbody></table></div>`;
+        container.innerHTML = html;
+    }
+
+    function criarEstruturaMataMata(times, rotulo) {
         let html = `<div class="bloco-chave">`;
-        html += `<h2>Chaveamento ${numeroChave}</h2>`;
+        html += `<h2>Chaveamento ${rotulo}</h2>`;
         html += `<div class="chaveamento">`;
 
-        // Confrontos Iniciais
-        html += `<div class="fase"><h3>Jogos</h3>`;
+        html += `<div class="fase"><h3>Confrontos</h3>`;
         for (let i = 0; i < times.length; i += 2) {
-            let t1 = times[i];
-            let t2 = times[i+1] ? times[i+1] : "A definir";
+            let team1 = times[i];
+            let team2 = times[i+1] ? times[i+1] : "A definir";
             html += `
                 <div class="jogo-mata">
-                    <div class="time-chave"><span title="${t1}">${t1}</span><input type="text" class="resultado-input"></div>
-                    <div class="time-chave"><span title="${t2}">${t2}</span><input type="text" class="resultado-input"></div>
+                    <div class="time-chave"><span>${team1}</span><input type="text" class="resultado-input"></div>
+                    <div class="time-chave"><span>${team2}</span><input type="text" class="resultado-input"></div>
                 </div>`;
         }
         html += `</div>`;
 
-        // Próxima Fase / Semifinal
         let prox = Math.ceil(times.length / 4);
         if (prox >= 1) {
             html += `<div class="fase"><h3>Fase Final</h3>`;
@@ -277,37 +442,12 @@
             html += `</div>`;
         }
 
-        // Vencedor
-        html += `<div class="fase" style="max-width: 130px;"><h3>🏆 Campeão</h3>`;
-        html += `<div class="jogo-mata" style="text-align:center; font-weight:bold; border-color:#f1c40f;"><span style="color:#f39c12; max-width: 100%;">A DEFINIR</span></div>`;
+        html += `<div class="fase" style="max-width:120px;"><h3>🏆 Campeão</h3>`;
+        html += `<div class="jogo-mata" style="text-align:center; font-weight:bold; border-color:#f59e0b;"><span style="color:#f59e0b;">A DEFINIR</span></div>`;
         html += `</div>`;
 
         html += `</div></div>`;
         return html;
-    }
-
-    function gerarCampeonato() {
-        const esporte = document.getElementById('nome-esporte').value || "Meu Campeonato";
-        const qtd = parseInt(document.getElementById('qtd-chaves').value);
-        document.getElementById('titulo-torneio').innerText = esporte;
-
-        const espaco = document.getElementById('espaco-campeonato');
-        espaco.innerHTML = "";
-
-        let t1 = document.getElementById('times-chave1').value.split('\n').map(l => l.trim()).filter(l => l !== "");
-        let t2 = document.getElementById('times-chave2').value.split('\n').map(l => l.trim()).filter(l => l !== "");
-
-        let conteudoHTML = "";
-        conteudoHTML += criarEstruturaChave(t1, qtd > 1 ? "1" : "");
-        if (qtd == 2) conteudoHTML += criarEstruturaChave(t2, "2");
-
-        if (conteudoHTML === "") {
-            alert("Por favor, insira pelo menos 2 times na Chave 1.");
-            return;
-        }
-
-        espaco.innerHTML = conteudoHTML;
-        document.getElementById('btn-imprimir').style.display = "block";
     }
 </script>
 </body>
