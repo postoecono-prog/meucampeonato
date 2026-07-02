@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Tabelas de Campeonatos</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #16a085;
+            --danger: #e74c3c;
+            --bg: #f5f6fa;
+            --text: #2f3640;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .no-print {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #dcdde1;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        select, input, button, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #13846c;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-print {
+            background-color: var(--primary);
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .resultado-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #bdc3c7;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .chaveamento {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 30px;
+            background: #fff;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .fase {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            min-width: 200px;
+            margin: 0 10px;
+        }
+
+        .jogo-mata {
+            background: #f8f9fa;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            padding: 10px;
+            margin: 15px 0;
+        }
+
+        .time-chave {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .time-chave:last-child {
+            border-bottom: none;
+        }
+
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .no-print { display: none !important; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; }
+            th { background-color: #ddd !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .jogo-mata { border: 2px solid #000 !important; background: white !important; }
+            .resultado-input { border: 1px solid #000 !important; background: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="titulo-torneio">Gerador de Campeonatos</h1>
+    
+    <div class="no-print">
+        <div class="form-group">
+            <label for="nome-esporte">Nome do Esporte / Competição:</label>
+            <input type="text" id="nome-esporte" placeholder="Ex: Copa Master de Futsal" oninput="salvarDados()">
+        </div>
+
+        <div class="form-group">
+            <label for="tipo-campeonato">Formato do Campeonato:</label>
+            <select id="tipo-campeonato" onchange="salvarDados()">
+                <option value="pontos">Pontos Corridos</option>
+                <option value="matamata">Mata-Mata (Chaveamento)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="times-input">Nome dos Times (um por linha):</label>
+            <textarea id="times-input" rows="8" placeholder="Time A&#10;Time B&#10;Time C" oninput="salvarDados()"></textarea>
+        </div>
+
+        <button onclick="gerarCampeonato()">Gerar / Atualizar Tabela</button>
+        <button class="btn-danger" onclick="limparComSenha()">Excluir / Limpar Tudo</button>
+    </div>
+
+    <div id="espaco-campeonato"></div>
+
+    <button class="no-print btn-print" id="btn-imprimir" onclick="window.print()" style="display: none;">Imprimir Tabela Organizadora</button>
+</div>
+
+<script>
+    const SENHA_CORRETA = "26";
+
+    // Ativa as funções do App Instalável
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+        .then(() => console.log("Service Worker ativo de forma segura."))
+        .catch(err => console.log("Erro no service worker:", err));
+    }
+
+    window.onload = function() {
+        carregarDadosSalvos();
+    };
+
+    function salvarDados() {
+        localStorage.setItem('nomeEsporte', document.getElementById('nome-esporte').value);
+        localStorage.setItem('tipoCampeonato', document.getElementById('tipo-campeonato').value);
+        localStorage.setItem('timesLista', document.getElementById('times-input').value);
+    }
+
+    function carregarDadosSalvos() {
+        if (localStorage.getItem('nomeEsporte')) {
+            document.getElementById('nome-esporte').value = localStorage.getItem('nomeEsporte');
+        }
+        if (localStorage.getItem('tipoCampeonato')) {
+            document.getElementById('tipo-campeonato').value = localStorage.getItem('tipoCampeonato');
+        }
+        if (localStorage.getItem('timesLista')) {
+            document.getElementById('times-input').value = localStorage.getItem('timesLista');
+            gerarCampeonato();
+        }
+    }
+
+    function limparComSenha() {
+        const senhaDigitada = prompt("Digite a senha para confirmar a exclusão:");
+        
+        if (senhaDigitada === SENHA_CORRETA) {
+            localStorage.clear();
+            document.getElementById('nome-esporte').value = "";
+            document.getElementById('tipo-campeonato').value = "pontos";
+            document.getElementById('times-input').value = "";
+            document.getElementById('espaco-campeonato').innerHTML = "";
+            document.getElementById('titulo-torneio').innerText = "Gerador de Campeonatos";
+            document.getElementById('btn-imprimir').style.display = "none";
+            alert("Dados excluídos com sucesso!");
+        } else {
+            alert("Senha incorreta! Operação cancelada.");
+        }
+    }
+
+    function gerenciarLinhasObjeto(linhas) {
+        return linhas.split('\n').map(line => line.trim()).filter(line => line !== "");
+    }
+
+    function gerarCampeonato() {
+        const esporte = document.getElementById('nome-esporte').value || "Campeonato Geral";
+        const tipo = document.getElementById('tipo-campeonato').value;
+        const timesText = document.getElementById('times-input').value;
+        const times = gerenciarLinhasObjeto(timesText);
+
+        if (times.length < 2) return;
+
+        document.getElementById('titulo-torneio').innerText = esporte;
+        const espaco = document.getElementById('espaco-campeonato');
+        espaco.innerHTML = ""; 
+
+        if (tipo === "pontos") {
+            gerarPontosCorridos(times, espaco);
+        } else {
+            gerarMataMata(times, espaco);
+        }
+
+        document.getElementById('btn-imprimir').style.display = "block";
+    }
+
+    function gerarPontosCorridos(times, container) {
+        let html = `<h2>Tabela de Classificação</h2>`;
+        html += `<table><thead><tr><th>Posição</th><th>Time</th><th>PONTOS</th><th>J</th><th>V</th><th>E</th><th>D</th></tr></thead><tbody>`;
+        times.forEach((time, index) => {
+            html += `<tr><td>${index + 1}º</td><td style="text-align:left; font-weight:bold;">${time}</td><td></td><td></td><td></td><td></td><td></td></tr>`;
+        });
+        html += `</tbody></table><h2 style="margin-top:40px;">Cronograma de Jogos</h2><table><thead><tr><th>Mandante</th><th>Placar</th><th>X</th><th>Placar</th><th>Visitante</th></tr></thead><tbody>`;
+        for (let i = 0; i < times.length; i++) {
+            for (let j = i + 1; j < times.length; j++) {
+                html += `<tr><td style="text-align:right; width:40%;">${times[i]}</td><td style="width:8%;"><input type="text" class="resultado-input"></td><td style="font-weight:bold; width:4%;">X</td><td style="width:8%;"><input type="text" class="resultado-input"></td><td style="text-align:left; width:40%;">${times[j]}</td></tr>`;
+            }
+        }
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    }
+
+    function gerarMataMata(times, container) {
+        let html = `<h2>Chaveamento Eliminatório</h2><div class="chaveamento">`;
+        let totalTimes = times.length;
+        html += `<div class="fase"><h3>Confrontos Iniciais</h3>`;
+        for (let i = 0; i < totalTimes; i += 2) {
+            let time1 = times[i];
+            let time2 = times[i+1] ? times[i+1] : "A definir";
+            html += `<div class="jogo-mata"><div class="time-chave"><span>${time1}</span><input type="text" class="resultado-input" style="height:20px; width:30px;"></div><div class="time-chave"><span>${time2}</span><input type="text" class="resultado-input" style="height:20px; width:30px;"></div></div>`;
+        }
+        html += `</div>`;
+        let proximosJogos = Math.ceil(totalTimes / 4);
+        if(proximosJogos >= 1) {
+             html += `<div class="fase"><h3>Próxima Fase</h3>`;
+             for(let i=0; i < proximosJogos; i++) {
+                 html += `<div class="jogo-mata"><div class="time-chave"><span>Vencedor ${2*i+1}</span> <input type="text" class="resultado-input" style="height:20px; width:30px;"></div><div class="time-chave"><span>Vencedor ${2*i+2}</span> <input type="text" class="resultado-input" style="height:20px; width:30px;"></div></div>`;
+             }
+             html += `</div>`;
+        }
+        html += `<div class="fase"><h3>🏆 CAMPEÃO 🏆</h3><div class="jogo-mata" style="text-align:center; font-weight:bold; border-color:#f1c40f; padding: 20px 10px;"><span style="color:#f39c12;">A DEFINIR</span></div></div></div>`;
+        container.innerHTML = html;
+    }
+</script>
+</body>
+</html>

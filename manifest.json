@@ -1,0 +1,17 @@
+{
+  "nav_mode": "standalone",
+  "name": "Gerador de Tabelas e Campeonatos",
+  "short_name": "Tabelas",
+  "description": "Crie chaves de torneios e tabelas de pontos corridos prontas para impressão.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f5f6fa",
+  "theme-color": "#2c3e50",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
